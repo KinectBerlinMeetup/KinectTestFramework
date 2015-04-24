@@ -1,0 +1,11 @@
+﻿* Playback ist pausiert Startbar
+* Mit Playback.SeekByRelativeTime kann man an eine bestimmte Stelle im Stream Springen?
+* Mit Playback.StepOnce bekommt man genau das nächste Event?
+* Man scheint nicht mehrere Clients initialisieren zu können? 
+* Client.CreateRerecording kann File neu Aufnehmen und dadurch kürzen?
+
+IDEEN:
+* "Kürzen" von aufgenommenen Studiofiles?
+* Metadaten zu einem File automatisch lesen -> start-, stopp punkte, Welche Streams sollen abgespielt werden?
+* Eventsystem was triggered, wenn file fertig abgespielt wurde
+* Neben KStudioClient handling auch Kinecthandling implementieren, damit man auch auf einzel-frame-basis testenkann 
