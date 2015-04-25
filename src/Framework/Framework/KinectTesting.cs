@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Threading;
 using Microsoft.Kinect.Tools;
 
 namespace Framework
@@ -14,9 +15,9 @@ namespace Framework
             SetupClientAndConnect();
             if (Client != null && Client.IsServiceConnected)
             {
-                var playbackFile = Client.CreateEventFile(filepath);
-                CurrentEventStreams = playbackFile.EventStreams;
-                Playback = Client.CreatePlayback(playbackFile);
+                Playback = Client.CreatePlayback(filepath);
+                CurrentEventStreams = Playback.Source.EventStreams;
+                
             }
         }
 
@@ -50,6 +51,7 @@ namespace Framework
             {
                 CurrentEventStreams = null;
                 Playback.Dispose();
+                Playback = null;
             }
         }
 
@@ -59,6 +61,7 @@ namespace Framework
             {
                 DisconnectClient();
                 Client.Dispose();
+                Client = null;
             }
         }
 
@@ -67,6 +70,16 @@ namespace Framework
             if (Client != null && Client.IsServiceConnected)
             {
                 Client.DisconnectFromService();
+            }
+        }
+
+        public static void PlaybackEverythingAndWait()
+        {
+            if (Playback != null)
+            {
+                Playback.EndBehavior = KStudioPlaybackEndBehavior.Stop;
+                Playback.Start();
+                Thread.Sleep(Playback.Duration);
             }
         }
     }
