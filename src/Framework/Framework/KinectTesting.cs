@@ -96,7 +96,7 @@ namespace Framework
         }
 
         /// <summary>
-        /// 
+        /// Note: Stop and Start needs longer thant pause and resume. Therefore for sequential playback of different parts, rather write another method.
         /// </summary>
         /// <param name="timing">Play with 30Hz or faster?</param>
         /// <param name="start">Play from here</param>
@@ -115,19 +115,29 @@ namespace Framework
                         break;
             }
 
-            if (start != null)
+            if (start != null && start < Playback.Duration)
             {
                 Playback.InPointByRelativeTime = start.Value;
+            }
+            else
+            {
+                start = Playback.StartRelativeTime;
             }
 
             if (end != null && end < Playback.Duration)
             {
                 Playback.OutPointByRelativeTime = end.Value;
             }
+            else
+            {
+                end = Playback.Duration;
+            }
+
+            var duration = end.Value - start.Value;
 
             Playback.EndBehavior = KStudioPlaybackEndBehavior.Stop;
             Playback.Start();
-            Thread.Sleep(Playback.Duration);
+            Thread.Sleep(duration);
             InvokePlaybackFinishedEvent();
         }
 
