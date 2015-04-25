@@ -2,5 +2,13 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="MainWindow" Height="350" Width="525">
-    <Grid />
+    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Stretch">
+        <Button Content="Record" Click="Record_OnClick"/>
+        <Button Content="Play" Click="Play_OnClick"/>
+        <Button Content="StartPaused" Click="StartPaused_OnClick"/>
+        <Button Content="Pause" Click="Pause_OnClick"/>
+        <Button Content="Steponce" Click="Steponce_OnClick"/>
+        <Button Content="NextEvent" Click="GetNextEvent_OnClick"/>
+        <Button Content="Frame Test" Click="FrameTest_OnClick"/>
+    </StackPanel>
 </Window>

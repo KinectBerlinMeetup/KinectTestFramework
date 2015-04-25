@@ -3,6 +3,8 @@
 * Mit Playback.StepOnce bekommt man genau das nächste Event?
 * Man scheint nicht mehrere Clients initialisieren zu können? 
 * Client.CreateRerecording kann File neu Aufnehmen und dadurch kürzen?
+* CLient.ConnectToService nutzbar mittels Netzwerk???
+
 
 IDEEN:
 * "Kürzen" von aufgenommenen Studiofiles?
