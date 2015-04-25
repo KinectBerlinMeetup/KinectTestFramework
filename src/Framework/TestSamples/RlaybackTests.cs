@@ -4,7 +4,7 @@ using NUnit.Framework;
 
 namespace TestSamples
 {
-    public class Class1
+    public class RlaybackTests
     {
         private readonly string _filepath = @"D:\Repositories\KinectTestFramework\Files\TestFile_allStreams.xef";
 
@@ -22,7 +22,25 @@ namespace TestSamples
         [Test]
         public void TestCase()
         {
-            KinectTesting.PlaybackEverythingAndWait(); 
+            KinectTesting.PlayAllWithoutPauses(); 
+        }
+
+        [Test]
+        public void TestCase2()
+        {
+            KinectTesting.Play();
+        }
+
+        [Test]
+        public void TestCase3()
+        {
+            KinectTesting.Play(PlaybackTiming.Fast);
+        }
+
+        [Test]
+        public void TestCase4()
+        {
+            KinectTesting.Play(PlaybackTiming.Fast, new TimeSpan(0,0,1), new TimeSpan(0,0,4));
         }
 
         [Test]

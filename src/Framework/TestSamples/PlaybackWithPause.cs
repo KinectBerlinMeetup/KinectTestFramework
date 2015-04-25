@@ -5,7 +5,7 @@ using NUnit.Framework;
 
 namespace TestSamples
 {
-    internal class ReplayWithPause
+    internal class PlaybackWithPause
     {
         private readonly string _filepath = @"D:\Repositories\KinectTestFramework\Files\TestFile_allStreams.xef";
 
@@ -29,7 +29,7 @@ namespace TestSamples
         [Test]
         public void TestPlayAndIngoreMarker()
         {
-            KinectTesting.PlaybackEverythingAndWait(); 
+            KinectTesting.PlayAllWithoutPauses(); 
         }
 
         [Test]

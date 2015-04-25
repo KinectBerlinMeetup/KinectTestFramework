@@ -9,6 +9,5 @@
         <Button Content="Pause" Click="Pause_OnClick"/>
         <Button Content="Steponce" Click="Steponce_OnClick"/>
         <Button Content="NextEvent" Click="GetNextEvent_OnClick"/>
-        <Button Content="Frame Test" Click="FrameTest_OnClick"/>
     </StackPanel>
 </Window>

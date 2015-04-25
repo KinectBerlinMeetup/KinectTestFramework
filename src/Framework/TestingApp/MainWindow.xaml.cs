@@ -29,7 +29,6 @@ namespace TestingApp
         private void OnLoaded(object sender, RoutedEventArgs routedEventArgs)
         {
             _client.ConnectToService();
-            //_client.CreateEventStream()
             _eventReader = _client.CreateEventReader(Path.Combine(Environment.CurrentDirectory, "TestFile_allStreams.xef"));
             
         }
@@ -128,11 +127,6 @@ namespace TestingApp
                 Console.WriteLine("EventSemanticID " + _event.EventStreamSemanticId);
                 Console.WriteLine("EventIndex " + _event.EventIndex);
             }
-        }
-
-        private void FrameTest_OnClick(object sender, RoutedEventArgs e)
-        {
-            var kinect = KinectSensor.GetDefault();
         }
     }
 }

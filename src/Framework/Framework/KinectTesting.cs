@@ -132,7 +132,7 @@ namespace Framework
         }
 
 
-        public static void PlaybackEverythingAndWait()
+        public static void PlayAllWithoutPauses()
         {
             if (Playback != null)
             {
