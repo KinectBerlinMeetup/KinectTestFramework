@@ -22,37 +22,37 @@ namespace TestSamples
         [Test]
         public void TestCase()
         {
-            KinectTesting.PlaybackEverythingAndWait(); // async and await? 
+            KinectTesting.PlaybackEverythingAndWait(); 
         }
 
         [Test]
         public void TestSingelFrameBody()
         {
-            KinectTesting.PlaySingleEvent(PlaybackStreams.Depth, new TimeSpan(0, 0, 1)); // async and await? 
+            KinectTesting.PlaySingleEvent(PlaybackStreams.Depth, new TimeSpan(0, 0, 1)); 
         }
 
         [Test]
         public void TestSingelFrameAudio()
         {
-            KinectTesting.PlaySingleEvent(PlaybackStreams.Audio, new TimeSpan(0, 0, 1)); // async and await? 
+            KinectTesting.PlaySingleEvent(PlaybackStreams.Audio, new TimeSpan(0, 0, 1)); 
         }
 
         [Test]
         public void TestSingelFrameIr()
         {
-            KinectTesting.PlaySingleEvent(PlaybackStreams.Ir, new TimeSpan(0, 0, 1)); // async and await? 
+            KinectTesting.PlaySingleEvent(PlaybackStreams.Ir, new TimeSpan(0, 0, 1)); 
         }
 
         [Test]
         public void TestSingelFrameColor()
         {
-            KinectTesting.PlaySingleEvent(PlaybackStreams.Color, new TimeSpan(0, 0, 1)); // async and await? 
+            KinectTesting.PlaySingleEvent(PlaybackStreams.Color, new TimeSpan(0, 0, 1)); 
         }
 
         [Test]
         public void TestSingelFrameDepth()
         {
-            KinectTesting.PlaySingleEvent(PlaybackStreams.Depth, new TimeSpan(0, 0, 1)); // async and await? 
+            KinectTesting.PlaySingleEvent(PlaybackStreams.Depth, new TimeSpan(0, 0, 1)); 
         }
 
         /// <summary>

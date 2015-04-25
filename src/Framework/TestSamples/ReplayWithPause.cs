@@ -27,21 +27,21 @@ namespace TestSamples
         }
 
         [Test]
-        public void TestCase()
+        public void TestPlayAndIngoreMarker()
         {
-            KinectTesting.PlaybackEverythingAndWait(); // async and await? 
+            KinectTesting.PlaybackEverythingAndWait(); 
         }
 
         [Test]
-        public void TestSingelFrameBody()
+        public void TestTillNext()
         {
-            KinectTesting.PlayTillNextMarker(); // async and await? 
+            KinectTesting.PlayTillNextMarker(); // 
         }
 
         [Test]
-        public void TestSingelFrameAudio()
+        public void TestTillTimespan()
         {
-            KinectTesting.PlayTillNextMarker(); // async and await? 
+            KinectTesting.PlayTillMarker(new TimeSpan(0,0,3)); 
         }
 
         /// <summary>
