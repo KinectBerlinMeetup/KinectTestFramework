@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using Framework;
 using NUnit.Framework;
 
 namespace TestSamples
 {
-    public class Class1
+    internal class ReplayWithPause
     {
         private readonly string _filepath = @"D:\Repositories\KinectTestFramework\Files\TestFile_allStreams.xef";
 
@@ -17,6 +18,12 @@ namespace TestSamples
         public void Setup()
         {
             KinectTesting.SetupPlayback(_filepath);
+            KinectTesting.SetPauseMarkers(new List<TimeSpan>
+            {
+                new TimeSpan(0, 0, 1),
+                new TimeSpan(0, 0, 2),
+                new TimeSpan(0, 0, 3)
+            });
         }
 
         [Test]
@@ -28,31 +35,13 @@ namespace TestSamples
         [Test]
         public void TestSingelFrameBody()
         {
-            KinectTesting.PlaySingleEvent(PlaybackStreams.Depth, new TimeSpan(0, 0, 1)); // async and await? 
+            KinectTesting.PlayTillNextMarker(); // async and await? 
         }
 
         [Test]
         public void TestSingelFrameAudio()
         {
-            KinectTesting.PlaySingleEvent(PlaybackStreams.Audio, new TimeSpan(0, 0, 1)); // async and await? 
-        }
-
-        [Test]
-        public void TestSingelFrameIr()
-        {
-            KinectTesting.PlaySingleEvent(PlaybackStreams.Ir, new TimeSpan(0, 0, 1)); // async and await? 
-        }
-
-        [Test]
-        public void TestSingelFrameColor()
-        {
-            KinectTesting.PlaySingleEvent(PlaybackStreams.Color, new TimeSpan(0, 0, 1)); // async and await? 
-        }
-
-        [Test]
-        public void TestSingelFrameDepth()
-        {
-            KinectTesting.PlaySingleEvent(PlaybackStreams.Depth, new TimeSpan(0, 0, 1)); // async and await? 
+            KinectTesting.PlayTillNextMarker(); // async and await? 
         }
 
         /// <summary>
