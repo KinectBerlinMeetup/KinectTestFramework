@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using Framework;
 using NUnit.Framework;
 
@@ -64,7 +65,14 @@ namespace TestSamples
         [Test]
         public void TestSingelFrameColor()
         {
-            KinectTesting.PlaySingleEvent(PlaybackStreams.Color, new TimeSpan(0, 0, 1)); 
+            KinectTesting.PlaySingleEvent(PlaybackStreams.Color, new TimeSpan(0, 0, 1));
+
+            //KinectTesting.Playback.StartPaused();
+            //for (int n = 0; n < 20; n++)
+            //{
+            //    KinectTesting.Playback.StepOnce();
+            //    Thread.Sleep(100);
+            //}
         }
 
         [Test]

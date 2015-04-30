@@ -169,13 +169,13 @@ namespace Framework
                     finding = CurrentEventStreams.Where(k => k.DataTypeName.Contains("Depth")).ToList();
                     break;
                 case PlaybackStreams.Ir:
-                    finding = CurrentEventStreams.Where(k => k.DataTypeName.Contains("Depth")).ToList();
+                    finding = CurrentEventStreams.Where(k => k.DataTypeName.Contains("Ir")).ToList();
                     break;
                 case PlaybackStreams.Color:
-                    finding = CurrentEventStreams.Where(k => k.DataTypeName.Contains("Depth")).ToList();
+                    finding = CurrentEventStreams.Where(k => k.DataTypeName.Contains("Uncompressed Color")).ToList();
                     break;
                 case PlaybackStreams.Audio:
-                    finding = CurrentEventStreams.Where(k => k.DataTypeName.Contains("Depth")).ToList();
+                    finding = CurrentEventStreams.Where(k => k.DataTypeName.Contains("Audio")).ToList();
                     break;
             }
 
@@ -183,7 +183,7 @@ namespace Framework
             {
                 Playback.StepOnce(finding[0]);
             }
-            Thread.Sleep(15);
+            Thread.Sleep(25); // if sleep value is to small, no frames arrive at eventhandlers
             Playback.Stop();
         }
 
