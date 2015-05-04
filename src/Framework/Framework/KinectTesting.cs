@@ -286,7 +286,6 @@ namespace Framework
                     {
                         if (Playback.State == KStudioPlaybackState.Stopped)
                         {
-                            Playback.Pause(); 
                             break;
                         }
                         Thread.Sleep(50);
