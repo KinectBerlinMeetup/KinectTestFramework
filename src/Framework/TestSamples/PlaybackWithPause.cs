@@ -5,10 +5,9 @@ using NUnit.Framework;
 
 namespace TestSamples
 {
-    internal class PlaybackWithPause
+    public class PlaybackWithPause
     {
         private readonly string _filepath = @"D:\Repositories\KinectTestFramework\Files\TestFile_allStreams.xef";
-
 
         /// <summary>
         ///     This methods should be called only once per class, otherwise the tests would be slowed down because everythime the
@@ -29,7 +28,7 @@ namespace TestSamples
         [Test]
         public void TestPlayAndIngoreMarker()
         {
-            KinectTesting.PlayAllWithoutPauses(); 
+            KinectTesting.Play();
         }
 
         [Test]
@@ -41,7 +40,7 @@ namespace TestSamples
         [Test]
         public void TestTillTimespan()
         {
-            KinectTesting.PlayTillMarker(new TimeSpan(0,0,3)); 
+            KinectTesting.PlayTillMarker(new TimeSpan(0, 0, 3));
         }
 
         /// <summary>

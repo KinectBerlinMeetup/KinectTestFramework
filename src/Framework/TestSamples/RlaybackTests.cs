@@ -22,40 +22,52 @@ namespace TestSamples
         }
 
         [Test]
-        public void TestCase()
-        {
-            KinectTesting.PlayAllWithoutPauses();
-        }
-
-        [Test]
         public void TestCase2()
         {
+            var framesRecieved = 0;
+            var reader = KinectSensor.GetDefault().DepthFrameSource.OpenReader();
+            reader.FrameArrived += delegate { framesRecieved++; };
+
             KinectTesting.Play();
+
+            Assert.That(framesRecieved, Is.GreaterThan(0));
         }
 
         [Test]
         public void TestCase3()
         {
+            var framesRecieved = 0;
+            var reader = KinectSensor.GetDefault().DepthFrameSource.OpenReader();
+            reader.FrameArrived += delegate { framesRecieved++; };
+
             KinectTesting.Play(PlaybackTiming.Fast);
+
+            Assert.That(framesRecieved, Is.GreaterThan(0));
         }
 
         [Test]
         public void TestCase4()
         {
-            KinectTesting.Play(PlaybackTiming.Fast, new TimeSpan(0, 0, 1), new TimeSpan(0, 0, 4));
-        }
-
-        [Test]
-        public void TestSingelFrameBody()
-        {
             var framesRecieved = 0;
-            var reader = KinectSensor.GetDefault().BodyFrameSource.OpenReader();
+            var reader = KinectSensor.GetDefault().DepthFrameSource.OpenReader();
             reader.FrameArrived += delegate { framesRecieved++; };
 
-            KinectTesting.PlaySingleEvent(PlaybackStreams.Body, new TimeSpan(0, 0, 1));
+            KinectTesting.Play(PlaybackTiming.Fast, new TimeSpan(0, 0, 1), new TimeSpan(0, 0, 4));
 
-            Assert.That(framesRecieved, Is.EqualTo(1));
+            Assert.That(framesRecieved, Is.GreaterThan(0));
         }
+
+        //[Test]
+        //public void TestSingelFrameBody()
+        //{
+        //    var framesRecieved = 0;
+        //    var reader = KinectSensor.GetDefault().BodyFrameSource.OpenReader();
+        //    reader.FrameArrived += delegate { framesRecieved++; };
+
+        //    KinectTesting.PlaySingleEvent(PlaybackStreams.Body, new TimeSpan(0, 0, 1));
+
+        //    Assert.That(framesRecieved, Is.EqualTo(1));
+        //}
 
         [Test]
         public void TestSingelFrameAudio()

@@ -71,6 +71,7 @@ namespace Framework
         public static void ExterminatePlayback()
         {
             ExterminateKinect();
+            ExterminateClient();
             if (Playback != null)
             {
                 CurrentEventStreams = null;
@@ -116,13 +117,22 @@ namespace Framework
             }
         }
 
+        public static void DeleteInAndOutPoint()
+        {
+            Playback.InPointByRelativeTime = new TimeSpan(0);
+            Playback.OutPointByRelativeTime = Playback.Duration;
+        }
+
         public static void PlayTillNextMarker()
         {
-            if (Playback == null) return;
-            var duration = Playback.PausePointsByRelativeTime.First(f => f > Playback.CurrentRelativeTime) -
-                           Playback.CurrentRelativeTime;
+            CheckPlayback();
+            CheckKinectIsOpen();
             StartOrResumePlayback();
-            Thread.Sleep(duration);
+            while (Playback.State != KStudioPlaybackState.Paused)
+            {
+                if (Playback.State == KStudioPlaybackState.Stopped) break;
+                Thread.Sleep(50);
+            }
         }
 
         public static void StartOrResumePlayback()
@@ -139,95 +149,27 @@ namespace Framework
 
         public static void PlayTillMarker(TimeSpan markerPosition)
         {
-            if (Playback == null) return;
-            var duration = markerPosition - Playback.CurrentRelativeTime;
+            CheckPlayback();
+            CheckKinectIsOpen();
             Playback.SetPausePointsByRelativeTime(new List<TimeSpan> {markerPosition});
             StartOrResumePlayback();
-            Thread.Sleep(duration);
-        }
-
-
-        public static void PlayAllWithoutPauses()
-        {
-            if (Playback != null)
+            while (Playback.State != KStudioPlaybackState.Paused)
             {
-                var tempPausePoints = Playback.PausePointsByRelativeTime.ToList();
-                DeletePauseMarkers();
-                Playback.EndBehavior = KStudioPlaybackEndBehavior.Stop;
-                Playback.Start();
-                Thread.Sleep(Playback.Duration);
-                SetPauseMarkers(tempPausePoints);
-                InvokePlaybackFinishedEvent();
+                if (Playback.State == KStudioPlaybackState.Stopped) break;
+                Thread.Sleep(50);
             }
         }
+
 
         public static void PlaySingleEvent(PlaybackStreams stream, TimeSpan position)
         {
-            if (Playback == null) return;
+            CheckPlayback();
             CheckKinectIsOpen();
-            if (position < Playback.Duration)
-            {
-                Playback.InPointByRelativeTime = position;
-                Playback.StartPaused();
-            }
-
-            List<KStudioEventStream> finding = null;
-
-            switch (stream)
-            {
-                // TODO: change where to first
-                case PlaybackStreams.All:
-                    Playback.StepOnce();
-                    break;
-                case PlaybackStreams.Body:
-                    finding = CurrentEventStreams.Where(k => k.DataTypeName.Contains("Body Index")).ToList();
-                    // Note: Playback.StepIOnce throws ArgumentExceptions for unknown reasons when using Body or BodyIndex streams.
-                    break;
-                case PlaybackStreams.Depth:
-                    finding = CurrentEventStreams.Where(k => k.DataTypeName.Contains("Depth")).ToList();
-                    break;
-                case PlaybackStreams.Ir:
-                    finding = CurrentEventStreams.Where(k => k.DataTypeName.Contains("IR")).ToList();
-                    break;
-                case PlaybackStreams.Color:
-                    finding = CurrentEventStreams.Where(k => k.DataTypeName.Contains("Uncompressed Color")).ToList();
-                    break;
-                case PlaybackStreams.Audio:
-                    finding = CurrentEventStreams.Where(k => k.DataTypeName.Contains("Audio")).ToList();
-                    break;
-            }
-
-            if (finding != null && finding.Any())
-            {
-                if (stream == PlaybackStreams.Depth)
-                {
-                    // Note: Somehow for Depth-StreamEvents you have to fire 2 frames to get one (if you fire 10 you get 9)
-                    Playback.StepOnce(finding[0]);
-                    Thread.Sleep(500);
-                }
-                Playback.StepOnce(finding[0]);
-            }
-            else
-            {
-                throw new InvalidOperationException("No Eventstream for " + stream + " in current Playbackfile found.");
-            }
-
-            Thread.Sleep(500); // if sleep value is to small, no frames arrive at eventhandlers
-            Playback.Stop();
-        }
-
-        public static void PlayNumberOfEvents(PlaybackStreams stream, TimeSpan position, int numberOfEvents)
-        {
-            if (Playback == null) return;
-            if (numberOfEvents <= 0) return;
-
-            CheckKinectIsOpen();
-
-            if (position < Playback.Duration)
-            {
-                Playback.InPointByRelativeTime = position;
-                Playback.StartPaused();
-            }
+            CheckTimespanIsInRecord(position);
+            var tempPausePoints = Playback.PausePointsByRelativeTime.ToList();
+            DeletePauseMarkers();
+            
+            Playback.StartPaused();
 
             List<KStudioEventStream> finding = null;
 
@@ -263,6 +205,76 @@ namespace Framework
                     Playback.StepOnce(finding[0]);
                     while (Playback.State != KStudioPlaybackState.Paused)
                     {
+                        Thread.Sleep(100);
+                    }
+                }
+                Playback.StepOnce(finding[0]);
+                while (Playback.State != KStudioPlaybackState.Paused)
+                {
+                    Thread.Sleep(100);
+                }
+            }
+            else
+            {
+                throw new InvalidOperationException("No Eventstream for " + stream + " in current Playbackfile found.");
+            }
+
+            Playback.Stop();
+            SetPauseMarkers(tempPausePoints);
+        }
+
+        public static void PlayNumberOfEvents(PlaybackStreams stream, TimeSpan position, int numberOfEvents)
+        {
+            CheckPlayback();
+            CheckKinectIsOpen();
+            CheckTimespanIsInRecord(position);
+
+            Playback.StartPaused();
+            var tempPausePoints = Playback.PausePointsByRelativeTime.ToList();
+            DeletePauseMarkers();
+
+            if (numberOfEvents <= 0) throw new ArgumentException("Number of Events should be greater than 0.");
+
+
+            List<KStudioEventStream> finding = null;
+
+            switch (stream)
+            {
+                // TODO: change where to first
+                case PlaybackStreams.All:
+                    Playback.StepOnce();
+                    break;
+                case PlaybackStreams.Body:
+                    finding = CurrentEventStreams.Where(k => k.DataTypeName.Contains("Body Index")).ToList();
+                    // Note: Playback.StepIOnce throws ArgumentExceptions for unknown reasons when using Body or BodyIndex streams.
+                    break;
+                case PlaybackStreams.Depth:
+                    finding = CurrentEventStreams.Where(k => k.DataTypeName.Contains("Depth")).ToList();
+                    break;
+                case PlaybackStreams.Ir:
+                    finding = CurrentEventStreams.Where(k => k.DataTypeName.Contains("IR")).ToList();
+                    break;
+                case PlaybackStreams.Color:
+                    finding = CurrentEventStreams.Where(k => k.DataTypeName.Contains("Uncompressed Color")).ToList();
+                    break;
+                case PlaybackStreams.Audio:
+                    finding = CurrentEventStreams.Where(k => k.DataTypeName.Contains("Audio")).ToList();
+                    break;
+            }
+
+            if (finding != null && finding.Any())
+            {
+                if (stream == PlaybackStreams.Depth)
+                {
+                    // Note: Somehow for Depth-StreamEvents you have to fire 2 frames to get one (if you fire 10 you get 9)
+                    Playback.StepOnce(finding[0]);
+                    while (Playback.State != KStudioPlaybackState.Paused)
+                    {
+                        if (Playback.State == KStudioPlaybackState.Stopped)
+                        {
+                            Playback.Pause();
+                            break;
+                        }
                         Thread.Sleep(50);
                     }
                 }
@@ -272,6 +284,11 @@ namespace Framework
                     Playback.StepOnce(finding[0]);
                     while (Playback.State != KStudioPlaybackState.Paused)
                     {
+                        if (Playback.State == KStudioPlaybackState.Stopped)
+                        {
+                            Playback.Pause(); 
+                            break;
+                        }
                         Thread.Sleep(50);
                     }
                 }
@@ -281,13 +298,9 @@ namespace Framework
                 throw new InvalidOperationException("No Eventstream for " + stream + " in current Playbackfile found.");
             }
             Playback.Stop();
+            SetPauseMarkers(tempPausePoints);
         }
 
-        private static void CheckKinectIsOpen()
-        {
-            if (!KinectSensor.GetDefault().IsOpen)
-                throw new InvalidOperationException("You won't get any frames because sensor is not open");
-        }
 
         /// <summary>
         ///     Note: Stop and Start needs longer thant pause and resume. Therefore for sequential playback of different parts,
@@ -300,7 +313,7 @@ namespace Framework
         public static void Play(PlaybackTiming timing = PlaybackTiming.Normal, TimeSpan? start = null,
             TimeSpan? end = null)
         {
-            if (Playback == null) return;
+            CheckPlayback();
 
             switch (timing)
             {
@@ -333,6 +346,7 @@ namespace Framework
                 Thread.Sleep(50);
             }
             SetPauseMarkers(tempPausePoints);
+            DeleteInAndOutPoint();
             InvokePlaybackFinishedEvent();
         }
 
@@ -342,6 +356,37 @@ namespace Framework
             {
                 PlaybackFinished.Invoke(Playback, new EventArgs());
             }
+        }
+
+        #endregion
+
+        #region checks
+
+        private static void CheckTimespanIsInRecord(TimeSpan position)
+        {
+            if (position < Playback.Duration)
+            {
+                Playback.InPointByRelativeTime = position;
+            }
+            else
+            {
+                throw new ArgumentException(
+                    "Given position is not within File-Record length. Recordlength is currently " + Playback.Duration +
+                    ".");
+            }
+        }
+
+        private static void CheckPlayback()
+        {
+            if (Playback == null)
+                throw new InvalidOperationException(
+                    "Playback needs to be initialised before. Use SetupPlayback() for example.");
+        }
+
+        private static void CheckKinectIsOpen()
+        {
+            if (!KinectSensor.GetDefault().IsOpen)
+                Console.WriteLine("WARNING! Default KinectSensor is not Open, Readers will not recieve Frames!");
         }
 
         #endregion
