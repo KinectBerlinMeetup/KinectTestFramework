@@ -197,10 +197,6 @@ namespace Framework
                     break;
             }
 
-            var index = CurrentEventStreams.IndexOf(finding[0]);
-            var index2 = Client.EventStreams.IndexOf(finding[0]);
-
-
             if (finding != null && finding.Any())
             {
                 if (stream == PlaybackStreams.Depth)
@@ -217,6 +213,73 @@ namespace Framework
             }
 
             Thread.Sleep(500); // if sleep value is to small, no frames arrive at eventhandlers
+            Playback.Stop();
+        }
+
+        public static void PlayNumberOfEvents(PlaybackStreams stream, TimeSpan position, int numberOfEvents)
+        {
+            if (Playback == null) return;
+            if (numberOfEvents <= 0) return;
+
+            CheckKinectIsOpen();
+
+            if (position < Playback.Duration)
+            {
+                Playback.InPointByRelativeTime = position;
+                Playback.StartPaused();
+            }
+
+            List<KStudioEventStream> finding = null;
+
+            switch (stream)
+            {
+                // TODO: change where to first
+                case PlaybackStreams.All:
+                    Playback.StepOnce();
+                    break;
+                case PlaybackStreams.Body:
+                    finding = CurrentEventStreams.Where(k => k.DataTypeName.Contains("Body Index")).ToList();
+                    // Note: Playback.StepIOnce throws ArgumentExceptions for unknown reasons when using Body or BodyIndex streams.
+                    break;
+                case PlaybackStreams.Depth:
+                    finding = CurrentEventStreams.Where(k => k.DataTypeName.Contains("Depth")).ToList();
+                    break;
+                case PlaybackStreams.Ir:
+                    finding = CurrentEventStreams.Where(k => k.DataTypeName.Contains("IR")).ToList();
+                    break;
+                case PlaybackStreams.Color:
+                    finding = CurrentEventStreams.Where(k => k.DataTypeName.Contains("Uncompressed Color")).ToList();
+                    break;
+                case PlaybackStreams.Audio:
+                    finding = CurrentEventStreams.Where(k => k.DataTypeName.Contains("Audio")).ToList();
+                    break;
+            }
+
+            if (finding != null && finding.Any())
+            {
+                if (stream == PlaybackStreams.Depth)
+                {
+                    // Note: Somehow for Depth-StreamEvents you have to fire 2 frames to get one (if you fire 10 you get 9)
+                    Playback.StepOnce(finding[0]);
+                    while (Playback.State != KStudioPlaybackState.Paused)
+                    {
+                        Thread.Sleep(50);
+                    }
+                }
+
+                for (var i = 0; i < numberOfEvents; i++)
+                {
+                    Playback.StepOnce(finding[0]);
+                    while (Playback.State != KStudioPlaybackState.Paused)
+                    {
+                        Thread.Sleep(50);
+                    }
+                }
+            }
+            else
+            {
+                throw new InvalidOperationException("No Eventstream for " + stream + " in current Playbackfile found.");
+            }
             Playback.Stop();
         }
 

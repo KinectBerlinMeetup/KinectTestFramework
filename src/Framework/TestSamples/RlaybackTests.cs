@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Diagnostics;
+using System.Threading;
 using Framework;
 using Microsoft.Kinect;
 using NUnit.Framework;
@@ -8,7 +10,6 @@ namespace TestSamples
     public class RlaybackTests
     {
         private readonly string _filepath = @"D:\Repositories\KinectTestFramework\Files\TestFile_allStreams.xef";
-        public int FramesRecieved { get; set; }
 
         /// <summary>
         ///     This methods should be called only once per class, otherwise the tests would be slowed down because everythime the
@@ -47,71 +48,78 @@ namespace TestSamples
         [Test]
         public void TestSingelFrameBody()
         {
-            FramesRecieved = 0;
+            var framesRecieved = 0;
             var reader = KinectSensor.GetDefault().BodyFrameSource.OpenReader();
-            reader.FrameArrived += delegate { FramesRecieved++; };
+            reader.FrameArrived += delegate { framesRecieved++; };
 
-
-            //KinectTesting.Play(PlaybackTiming.Fast);
             KinectTesting.PlaySingleEvent(PlaybackStreams.Body, new TimeSpan(0, 0, 1));
 
-            Assert.That(FramesRecieved, Is.GreaterThan(0));
+            Assert.That(framesRecieved, Is.EqualTo(1));
         }
 
         [Test]
         public void TestSingelFrameAudio()
         {
-            FramesRecieved = 0;
+            var framesRecieved = 0;
             var reader = KinectSensor.GetDefault().AudioSource.OpenReader();
-            reader.FrameArrived += delegate { FramesRecieved++; };
+            reader.FrameArrived += delegate { framesRecieved++; };
 
-
-            //KinectTesting.Play(PlaybackTiming.Fast);
             KinectTesting.PlaySingleEvent(PlaybackStreams.Audio, new TimeSpan(0, 0, 1));
 
-            Assert.That(FramesRecieved, Is.GreaterThan(0));
+            Assert.That(framesRecieved, Is.EqualTo(1));
         }
 
         [Test]
         public void TestSingelFrameIr()
         {
-            FramesRecieved = 0;
+            var framesRecieved = 0;
             var reader = KinectSensor.GetDefault().InfraredFrameSource.OpenReader();
-            reader.FrameArrived += delegate { FramesRecieved++; };
+            reader.FrameArrived += delegate { framesRecieved++; };
 
-
-            //KinectTesting.Play(PlaybackTiming.Fast);
             KinectTesting.PlaySingleEvent(PlaybackStreams.Ir, new TimeSpan(0, 0, 1));
 
-            Assert.That(FramesRecieved, Is.GreaterThan(0));
+            Assert.That(framesRecieved, Is.EqualTo(1));
+
+            Thread.Sleep(1000); // Note: Added to check behaviour change when running all tests. 
         }
 
         [Test]
         public void TestSingelFrameColor()
         {
-            FramesRecieved = 0;
+            var framesRecieved = 0;
             var reader = KinectSensor.GetDefault().ColorFrameSource.OpenReader();
-            reader.FrameArrived += delegate { FramesRecieved++; };
+            reader.FrameArrived += delegate { framesRecieved++; };
 
-
-            //KinectTesting.Play(PlaybackTiming.Fast);
             KinectTesting.PlaySingleEvent(PlaybackStreams.Color, new TimeSpan(0, 0, 1));
 
-            Assert.That(FramesRecieved, Is.GreaterThan(0));
+            Assert.That(framesRecieved, Is.EqualTo(1));
         }
 
         [Test]
         public void TestSingelFrameDepth()
         {
-            FramesRecieved = 0;
+            var framesRecieved = 0;
             var reader = KinectSensor.GetDefault().DepthFrameSource.OpenReader();
-            reader.FrameArrived += delegate { FramesRecieved++; };
+            reader.FrameArrived += delegate { framesRecieved++; };
 
-
-            //KinectTesting.Play(PlaybackTiming.Fast);
             KinectTesting.PlaySingleEvent(PlaybackStreams.Depth, new TimeSpan(0, 0, 1));
 
-            Assert.That(FramesRecieved, Is.GreaterThan(0));
+            Assert.That(framesRecieved, Is.EqualTo(1));
+        }
+
+        [Test]
+        public void TestStepOnceSpeed()
+        {
+            var framesRecieved = 0;
+            var reader = KinectSensor.GetDefault().DepthFrameSource.OpenReader();
+            reader.FrameArrived += delegate { framesRecieved++; };
+            var watch = new Stopwatch();
+            watch.Start();
+
+            KinectTesting.PlayNumberOfEvents(PlaybackStreams.Depth, new TimeSpan(0, 0, 1),100);
+
+            watch.Stop();
+            Assert.That(framesRecieved, Is.EqualTo(100));
         }
 
         /// <summary>
