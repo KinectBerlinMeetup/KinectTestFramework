@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
+using Microsoft.Kinect;
 using Microsoft.Kinect.Tools;
 
 namespace Framework
@@ -24,6 +25,7 @@ namespace Framework
                 Playback = Client.CreatePlayback(filepath);
                 CurrentEventStreams = Playback.Source.EventStreams;
             }
+            SetupKinect();
         }
 
         public static void SetupClientAndConnect()
@@ -50,12 +52,25 @@ namespace Framework
             }
         }
 
+        public static void SetupKinect(KinectSensor kinect = null)
+        {
+            if (kinect == null) kinect = KinectSensor.GetDefault();
+            kinect.Open();
+        }
+
         #endregion
 
         #region Extermination
 
+        public static void ExterminateKinect(KinectSensor kinect = null)
+        {
+            if (kinect == null) kinect = KinectSensor.GetDefault();
+            kinect.Close();
+        }
+
         public static void ExterminatePlayback()
         {
+            ExterminateKinect();
             if (Playback != null)
             {
                 CurrentEventStreams = null;
@@ -94,8 +109,8 @@ namespace Framework
 
         public static void DeletePauseMarkers()
         {
-            List<TimeSpan> pausePoints = Playback.PausePointsByRelativeTime.ToList();
-            foreach (TimeSpan point in pausePoints)
+            var pausePoints = Playback.PausePointsByRelativeTime.ToList();
+            foreach (var point in pausePoints)
             {
                 Playback.RemovePausePointByRelativeTime(point);
             }
@@ -104,10 +119,10 @@ namespace Framework
         public static void PlayTillNextMarker()
         {
             if (Playback == null) return;
-            TimeSpan duration = Playback.PausePointsByRelativeTime.First(f => f > Playback.CurrentRelativeTime) -
-                                Playback.CurrentRelativeTime;
+            var duration = Playback.PausePointsByRelativeTime.First(f => f > Playback.CurrentRelativeTime) -
+                           Playback.CurrentRelativeTime;
             StartOrResumePlayback();
-            Thread.Sleep(duration); 
+            Thread.Sleep(duration);
         }
 
         public static void StartOrResumePlayback()
@@ -125,10 +140,10 @@ namespace Framework
         public static void PlayTillMarker(TimeSpan markerPosition)
         {
             if (Playback == null) return;
-            TimeSpan duration = markerPosition - Playback.CurrentRelativeTime;
+            var duration = markerPosition - Playback.CurrentRelativeTime;
             Playback.SetPausePointsByRelativeTime(new List<TimeSpan> {markerPosition});
             StartOrResumePlayback();
-            Thread.Sleep(duration); 
+            Thread.Sleep(duration);
         }
 
 
@@ -183,7 +198,7 @@ namespace Framework
             {
                 Playback.StepOnce(finding[0]);
             }
-            Thread.Sleep(25); // if sleep value is to small, no frames arrive at eventhandlers
+            Thread.Sleep(500); // if sleep value is to small, no frames arrive at eventhandlers
             Playback.Stop();
         }
 
@@ -227,13 +242,19 @@ namespace Framework
                 end = Playback.Duration;
             }
 
-            TimeSpan duration = end.Value - start.Value;
+            var duration = end.Value - start.Value;
 
             var tempPausePoints = Playback.PausePointsByRelativeTime.ToList();
+
             DeletePauseMarkers();
             Playback.EndBehavior = KStudioPlaybackEndBehavior.Stop;
             Playback.Start();
-            Thread.Sleep(duration);
+
+            while (Playback.State != KStudioPlaybackState.Stopped)
+            {
+                Thread.Sleep(50);
+            }
+            //Thread.Sleep(duration);
             SetPauseMarkers(tempPausePoints);
             InvokePlaybackFinishedEvent();
         }
