@@ -1,4 +1,5 @@
-﻿using Microsoft.Kinect;
+﻿using System.Linq;
+using Microsoft.Kinect;
 
 namespace Framework
 {
@@ -6,7 +7,7 @@ namespace Framework
     {
         public static Body TrackedSkeleton(this BodyFrame bodyFrame)
         {
-            int trackedSkeleton = -1;
+            var trackedSkeleton = -1;
             var bodies = new Body[bodyFrame.BodyCount];
             bodyFrame.GetAndRefreshBodyData(bodies);
             // aktuell haben wir nur ein KinectSkeleton das im KinectBitmapPresenter fest eingehangen ist - trackedSkeleton gibt an welches Skelett dort gerendert werden soll
@@ -21,7 +22,7 @@ namespace Framework
 
             if (trackedSkeleton == -1) // noch kein Skeleton getracked, wir versuchen eins auszusuchen
             {
-                for (int i = 0; i < bodies.Length; i++)
+                for (var i = 0; i < bodies.Length; i++)
                 {
                     if (bodies[i].IsTracked)
                     {
@@ -35,6 +36,33 @@ namespace Framework
                 return bodies[trackedSkeleton];
             }
             return null;
+        }
+
+        /// <summary>
+        ///     Gibt alle Skelette eines Frames zurück
+        ///     Aus KinectToolbox entnommen
+        /// </summary>
+        /// <param name="frame"></param>
+        /// <returns>Array von Skeletten in einem Frame</returns>
+        public static Body[] GetSkeletons(this BodyFrame frame)
+        {
+            if (frame == null)
+            {
+                return null;
+            }
+
+            var skeletons = new Body[frame.BodyCount];
+            frame.GetAndRefreshBodyData(skeletons);
+
+            return skeletons;
+        }
+
+        public static int NumberOfTrackedBodies(this BodyFrame frame)
+        {
+            var bodies = new Body[frame.BodyCount];
+            frame.GetAndRefreshBodyData(bodies);
+
+            return bodies.Count(t => t.IsTracked);
         }
     }
 }

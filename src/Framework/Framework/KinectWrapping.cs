@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
+using Framework.Wraps;
 using Microsoft.Kinect;
 using Microsoft.Kinect.Tools;
 
@@ -10,7 +11,6 @@ using Microsoft.Kinect.Tools;
 // Body Frame
 // BodyIndexFrame
 // MultiFrame
-// Bodies; JointCollection
 
 // Je: ExtentionMethods zum Befüllen der Frames
 //     Datenhalterklasse
@@ -129,30 +129,5 @@ namespace Framework
 
             return BodyWraps.GetRange(0,arrayLength).ToArray();
         }
-    }
-
-    public class BodyWrap
-    {
-        public FrameEdges ClippedEdges { get; set; }
-        public TrackingConfidence HandLeftConfidence { get; set; }
-        public TrackingConfidence HandRightConfidence { get; set; }
-        public HandState HandLeftState { get; set; }
-        public HandState HandRightState { get; set; }
-        public bool IsRestricted { get; set; }
-        public IReadOnlyDictionary<JointType, JointOrientation> JointOrientations { get; set; }
-        public IReadOnlyDictionary<JointType, Joint> Joints { get; set; }
-        public bool IsTracked { get; set; }
-        public PointF Lean { get; set; }
-        public ulong TrackingId { get; set; }
-        public TrackingState LeanTrackingState { get; set; }
-    }
-
-    public class BodyFrameWrap
-    {
-        public int BodyCount { get; set; }
-        public BodyFrameSource BodyFrameSource { get; set; }
-        public Vector4 FloorClipPlane { get; set; }
-        public TimeSpan RelativeTime { get; set; }
-        public Body[] Bodies { get; set; }
     }
 }
