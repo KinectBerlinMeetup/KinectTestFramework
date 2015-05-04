@@ -76,6 +76,48 @@ namespace Framework
             return wrap;
         }
 
+        public static AudioFrameWrap GetWrap(this AudioBeamFrame frame)
+        {
+            var wrap = new AudioFrameWrap();
+            if (frame == null) return null;
+            wrap.Duration = frame.Duration;
+            wrap.AudioBeam = frame.AudioBeam;
+            wrap.RelativeTimeStart = frame.RelativeTimeStart;
+            wrap.SubFrames = frame.SubFrames;
+
+            return wrap;
+        }
+
+        public static ColorFrameWrap GetWrap(this ColorFrame frame)
+        {
+            var wrap = new ColorFrameWrap();
+            if (frame == null) return null;
+            wrap.ColorCameraSettings = frame.ColorCameraSettings;
+            wrap.FrameDescription = frame.FrameDescription;
+            wrap.RawColorImageFormat = frame.RawColorImageFormat;
+            wrap.RelativeTime = frame.RelativeTime;
+
+            var array = new byte[wrap.FrameDescription.Width * wrap.FrameDescription.Height * wrap.FrameDescription.BytesPerPixel]; ;
+            frame.CopyConvertedFrameDataToArray(array, ColorImageFormat.Rgba);
+            wrap.RgbaPixelArray = array;
+
+            return wrap;
+        }
+
+        public static DepthFrameWrap GetWrap(this DepthFrame frame)
+        {
+            var wrap = new DepthFrameWrap();
+            if (frame == null) return null;
+            wrap.FrameDescription = frame.FrameDescription;
+            wrap.RelativeTime = frame.RelativeTime;
+
+            var array = new ushort[wrap.FrameDescription.Width * wrap.FrameDescription.Height * wrap.FrameDescription.BytesPerPixel];
+            frame.CopyFrameDataToArray(array);
+            wrap.DepthPixelArray = array;
+            return wrap;
+        }
+
+
         public static BodyWrap GetWrap(this Body body)
         {
             var wrap = new BodyWrap();
@@ -93,6 +135,18 @@ namespace Framework
             wrap.LeanTrackingState = body.LeanTrackingState;
             wrap.TrackingId = body.TrackingId;
 
+            return wrap;
+        }
+
+        public static MultiFrameWrap GetWrap(this MultiSourceFrame frame)
+        {
+            var wrap = new MultiFrameWrap
+            {
+                BodyFrameWrap = frame.BodyFrameReference.AcquireFrame().GetWrap(),
+                ColorFrameWrap = frame.ColorFrameReference.AcquireFrame().GetWrap(),
+                DepthFrameWrap = frame.DepthFrameReference.AcquireFrame().GetWrap()
+                // TODO: Add other Wraps
+            };
             return wrap;
         }
 

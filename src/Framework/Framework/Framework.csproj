@@ -62,12 +62,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Wraps\AudioFrameWrap.cs" />
     <Compile Include="Wraps\BodyFrameWrap.cs" />
     <Compile Include="Wraps\BodyWrap.cs" />
     <Compile Include="KinectHelper.cs" />
     <Compile Include="KinectWrapping.cs" />
     <Compile Include="KinectTesting.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Wraps\ColorFrameWrap.cs" />
+    <Compile Include="Wraps\DepthFrameWrap.cs" />
+    <Compile Include="Wraps\IrFrameWrap.cs" />
+    <Compile Include="Wraps\MultiFrameWrap.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

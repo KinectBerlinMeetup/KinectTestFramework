@@ -34,5 +34,15 @@ namespace TestSamples
             var wraps = KinectWrapping.GetArrayOfBodyFrameWraps(new TimeSpan(0, 0, 1), KinectTesting.Playback, 15);
             Assert.That(wraps.Length, Is.EqualTo(15));
         }
+
+
+        /// <summary>
+        ///     This methods should be called only once per class, otherwise the tests would be slowed down
+        /// </summary>
+        [TestFixtureTearDown]
+        public void TearDown()
+        {
+            KinectTesting.ExterminatePlayback();
+        }
     }
 }
