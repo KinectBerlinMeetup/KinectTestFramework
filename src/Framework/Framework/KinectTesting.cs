@@ -164,6 +164,7 @@ namespace Framework
         public static void PlaySingleEvent(PlaybackStreams stream, TimeSpan position)
         {
             if (Playback == null) return;
+            CheckKinectIsOpen();
             if (position < Playback.Duration)
             {
                 Playback.InPointByRelativeTime = position;
@@ -174,17 +175,19 @@ namespace Framework
 
             switch (stream)
             {
+                // TODO: change where to first
                 case PlaybackStreams.All:
                     Playback.StepOnce();
                     break;
                 case PlaybackStreams.Body:
-                    finding = CurrentEventStreams.Where(k => k.DataTypeName.Contains("Body")).ToList();
+                    finding = CurrentEventStreams.Where(k => k.DataTypeName.Contains("Body Index")).ToList();
+                    // Note: Playback.StepIOnce throws ArgumentExceptions for unknown reasons when using Body or BodyIndex streams.
                     break;
                 case PlaybackStreams.Depth:
                     finding = CurrentEventStreams.Where(k => k.DataTypeName.Contains("Depth")).ToList();
                     break;
                 case PlaybackStreams.Ir:
-                    finding = CurrentEventStreams.Where(k => k.DataTypeName.Contains("Ir")).ToList();
+                    finding = CurrentEventStreams.Where(k => k.DataTypeName.Contains("IR")).ToList();
                     break;
                 case PlaybackStreams.Color:
                     finding = CurrentEventStreams.Where(k => k.DataTypeName.Contains("Uncompressed Color")).ToList();
@@ -194,17 +197,39 @@ namespace Framework
                     break;
             }
 
+            var index = CurrentEventStreams.IndexOf(finding[0]);
+            var index2 = Client.EventStreams.IndexOf(finding[0]);
+
+
             if (finding != null && finding.Any())
             {
+                if (stream == PlaybackStreams.Depth)
+                {
+                    // Note: Somehow for Depth-StreamEvents you have to fire 2 frames to get one (if you fire 10 you get 9)
+                    Playback.StepOnce(finding[0]);
+                    Thread.Sleep(500);
+                }
                 Playback.StepOnce(finding[0]);
             }
+            else
+            {
+                throw new InvalidOperationException("No Eventstream for " + stream + " in current Playbackfile found.");
+            }
+
             Thread.Sleep(500); // if sleep value is to small, no frames arrive at eventhandlers
             Playback.Stop();
+        }
+
+        private static void CheckKinectIsOpen()
+        {
+            if (!KinectSensor.GetDefault().IsOpen)
+                throw new InvalidOperationException("You won't get any frames because sensor is not open");
         }
 
         /// <summary>
         ///     Note: Stop and Start needs longer thant pause and resume. Therefore for sequential playback of different parts,
         ///     rather write another method.
+        ///     Note: ingores Pausepoints
         /// </summary>
         /// <param name="timing">Play with 30Hz or faster?</param>
         /// <param name="start">Play from here</param>
@@ -228,21 +253,11 @@ namespace Framework
             {
                 Playback.InPointByRelativeTime = start.Value;
             }
-            else
-            {
-                start = Playback.StartRelativeTime;
-            }
 
             if (end != null && end < Playback.Duration)
             {
                 Playback.OutPointByRelativeTime = end.Value;
             }
-            else
-            {
-                end = Playback.Duration;
-            }
-
-            var duration = end.Value - start.Value;
 
             var tempPausePoints = Playback.PausePointsByRelativeTime.ToList();
 
@@ -254,7 +269,6 @@ namespace Framework
             {
                 Thread.Sleep(50);
             }
-            //Thread.Sleep(duration);
             SetPauseMarkers(tempPausePoints);
             InvokePlaybackFinishedEvent();
         }
