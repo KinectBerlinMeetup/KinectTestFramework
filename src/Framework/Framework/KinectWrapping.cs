@@ -26,7 +26,7 @@ namespace Framework
         private static BodyFrameWrap BodyWrap { get; set; }
         private static List<BodyFrameWrap> BodyWraps { get; set; }
 
-        public static List<Body[]> GetAllTrackedBodies(KStudioPlayback playback)
+        public static List<Body[]> GetAllBodies(KStudioPlayback playback)
         {
             var bodies = new List<Body[]>();
 

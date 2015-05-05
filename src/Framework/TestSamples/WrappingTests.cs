@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Framework;
 using NUnit.Framework;
 
@@ -21,18 +17,20 @@ namespace TestSamples
         {
             KinectTesting.SetupPlayback(_filepath);
         }
+
         [Test]
         public void TestBodyFrameWrap()
         {
-            var wrap = KinectWrapping.GetSingleBodyFrameWrapWithTrackedBody(new TimeSpan(0, 0, 1), KinectTesting.Playback);
+            var wrap = KinectWrapping.GetSingleBodyFrameWrapWithTrackedBody(new TimeSpan(0, 0, 1),
+                KinectTesting.Playback);
             Assert.That(wrap, Is.Not.Null);
         }
 
         [Test]
         public void TestBodies()
         {
-            var wrap = KinectWrapping.GetAllTrackedBodies(KinectTesting.Playback);
-            
+            var wrap = KinectWrapping.GetAllBodies(KinectTesting.Playback);
+
             Assert.That(wrap.Count, Is.GreaterThan(100));
         }
 
@@ -49,7 +47,6 @@ namespace TestSamples
             var wraps = KinectWrapping.GetArrayOfBodyFrameWraps(new TimeSpan(0, 0, 1), KinectTesting.Playback, 15);
             Assert.That(wraps.Length, Is.EqualTo(15));
         }
-
 
         /// <summary>
         ///     This methods should be called only once per class, otherwise the tests would be slowed down
