@@ -29,6 +29,21 @@ namespace TestSamples
         }
 
         [Test]
+        public void TestBodies()
+        {
+            var wrap = KinectWrapping.GetAllTrackedBodies(KinectTesting.Playback);
+            
+            Assert.That(wrap.Count, Is.GreaterThan(100));
+        }
+
+        [Test]
+        public void TestBodiesSingleFrame()
+        {
+            var bodies = KinectWrapping.GetBodyTrackedBodiesForSingleFrame(new TimeSpan(0, 0, 1), KinectTesting.Playback);
+            Assert.That(bodies.Count, Is.GreaterThan(0));
+        }
+
+        [Test]
         public void TestBodyFrameWrapArray()
         {
             var wraps = KinectWrapping.GetArrayOfBodyFrameWraps(new TimeSpan(0, 0, 1), KinectTesting.Playback, 15);

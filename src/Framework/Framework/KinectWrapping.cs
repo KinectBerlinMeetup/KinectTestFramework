@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using Framework.Wraps;
 using Microsoft.Kinect;
@@ -24,6 +25,64 @@ namespace Framework
     {
         private static BodyFrameWrap BodyWrap { get; set; }
         private static List<BodyFrameWrap> BodyWraps { get; set; }
+
+        public static List<Body[]> GetAllTrackedBodies(KStudioPlayback playback)
+        {
+            var bodies = new List<Body[]>();
+
+            var reader = KinectSensor.GetDefault().BodyFrameSource.OpenReader();
+            reader.FrameArrived += delegate(object sender, BodyFrameArrivedEventArgs e)
+            {
+                var frameRef = e.FrameReference;
+                using (var frame = frameRef.AcquireFrame())
+                {
+                    if (frame != null)
+                    {
+                        bodies.Add(frame.GetSkeletons());
+                    }
+                }
+            };
+
+            KinectTesting.Play();
+            return bodies;
+        }
+
+        public static List<Body> GetBodyTrackedBodiesForSingleFrame(TimeSpan? position, KStudioPlayback playback)
+        {
+            if (position == null)
+            {
+                position = new TimeSpan(0, 0, 0);
+            }
+
+            var bodies = new List<Body>();
+
+            var reader = KinectSensor.GetDefault().BodyFrameSource.OpenReader();
+            reader.FrameArrived += delegate(object sender, BodyFrameArrivedEventArgs e)
+            {
+                var frameRef = e.FrameReference;
+                using (var frame = frameRef.AcquireFrame())
+                {
+                    if (frame != null)
+                    {
+                        if (bodies.Count == 0)
+                        {
+                            bodies = frame.GetSkeletons().Where(s => s.IsTracked).ToList();
+                        }
+                    }
+                }
+            };
+
+            KinectTesting.Play(PlaybackTiming.Normal, position);
+
+            var n = 0;
+            while (bodies.Count == 0)
+            {
+                if (n == 100) throw new TimeoutException("No Bodies were set in given Time.");
+                Thread.Sleep(50);
+            }
+
+            return bodies;
+        }
 
         public static BodyFrameWrap GetSingleBodyFrameWrapWithTrackedBody(TimeSpan? position, KStudioPlayback playback)
         {
@@ -97,7 +156,9 @@ namespace Framework
             wrap.RawColorImageFormat = frame.RawColorImageFormat;
             wrap.RelativeTime = frame.RelativeTime;
 
-            var array = new byte[wrap.FrameDescription.Width * wrap.FrameDescription.Height * wrap.FrameDescription.BytesPerPixel]; ;
+            var array =
+                new byte[wrap.FrameDescription.Width*wrap.FrameDescription.Height*wrap.FrameDescription.BytesPerPixel];
+            ;
             frame.CopyConvertedFrameDataToArray(array, ColorImageFormat.Rgba);
             wrap.RgbaPixelArray = array;
 
@@ -111,12 +172,12 @@ namespace Framework
             wrap.FrameDescription = frame.FrameDescription;
             wrap.RelativeTime = frame.RelativeTime;
 
-            var array = new ushort[wrap.FrameDescription.Width * wrap.FrameDescription.Height * wrap.FrameDescription.BytesPerPixel];
+            var array =
+                new ushort[wrap.FrameDescription.Width*wrap.FrameDescription.Height*wrap.FrameDescription.BytesPerPixel];
             frame.CopyFrameDataToArray(array);
             wrap.DepthPixelArray = array;
             return wrap;
         }
-
 
         public static BodyWrap GetWrap(this Body body)
         {
@@ -181,7 +242,7 @@ namespace Framework
                 Thread.Sleep(50);
             }
 
-            return BodyWraps.GetRange(0,arrayLength).ToArray();
+            return BodyWraps.GetRange(0, arrayLength).ToArray();
         }
     }
 }
