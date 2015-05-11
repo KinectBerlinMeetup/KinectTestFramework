@@ -161,7 +161,7 @@ namespace Framework
         }
 
 
-        public static void PlaySingleEvent(PlaybackStreams stream, TimeSpan position)
+        public static void PlaySingleEvent(KinectStreams stream, TimeSpan position)
         {
             CheckPlayback();
             CheckKinectIsOpen();
@@ -176,30 +176,30 @@ namespace Framework
             switch (stream)
             {
                 // TODO: change where to first
-                case PlaybackStreams.All:
+                case KinectStreams.All:
                     Playback.StepOnce();
                     break;
-                case PlaybackStreams.Body:
+                case KinectStreams.Body:
                     finding = CurrentEventStreams.Where(k => k.DataTypeName.Contains("Body Index")).ToList();
                     // Note: Playback.StepIOnce throws ArgumentExceptions for unknown reasons when using Body or BodyIndex streams.
                     break;
-                case PlaybackStreams.Depth:
+                case KinectStreams.Depth:
                     finding = CurrentEventStreams.Where(k => k.DataTypeName.Contains("Depth")).ToList();
                     break;
-                case PlaybackStreams.Ir:
+                case KinectStreams.Ir:
                     finding = CurrentEventStreams.Where(k => k.DataTypeName.Contains("IR")).ToList();
                     break;
-                case PlaybackStreams.Color:
+                case KinectStreams.Color:
                     finding = CurrentEventStreams.Where(k => k.DataTypeName.Contains("Uncompressed Color")).ToList();
                     break;
-                case PlaybackStreams.Audio:
+                case KinectStreams.Audio:
                     finding = CurrentEventStreams.Where(k => k.DataTypeName.Contains("Audio")).ToList();
                     break;
             }
 
             if (finding != null && finding.Any())
             {
-                if (stream == PlaybackStreams.Depth)
+                if (stream == KinectStreams.Depth)
                 {
                     // Note: Somehow for Depth-StreamEvents you have to fire 2 frames to get one (if you fire 10 you get 9)
                     Playback.StepOnce(finding[0]);
@@ -223,7 +223,7 @@ namespace Framework
             SetPauseMarkers(tempPausePoints);
         }
 
-        public static void PlayNumberOfEvents(PlaybackStreams stream, TimeSpan position, int numberOfEvents)
+        public static void PlayNumberOfEvents(KinectStreams stream, TimeSpan position, int numberOfEvents)
         {
             CheckPlayback();
             CheckKinectIsOpen();
@@ -241,30 +241,30 @@ namespace Framework
             switch (stream)
             {
                 // TODO: change where to first
-                case PlaybackStreams.All:
+                case KinectStreams.All:
                     Playback.StepOnce();
                     break;
-                case PlaybackStreams.Body:
+                case KinectStreams.Body:
                     finding = CurrentEventStreams.Where(k => k.DataTypeName.Contains("Body Index")).ToList();
                     // Note: Playback.StepIOnce throws ArgumentExceptions for unknown reasons when using Body or BodyIndex streams.
                     break;
-                case PlaybackStreams.Depth:
+                case KinectStreams.Depth:
                     finding = CurrentEventStreams.Where(k => k.DataTypeName.Contains("Depth")).ToList();
                     break;
-                case PlaybackStreams.Ir:
+                case KinectStreams.Ir:
                     finding = CurrentEventStreams.Where(k => k.DataTypeName.Contains("IR")).ToList();
                     break;
-                case PlaybackStreams.Color:
+                case KinectStreams.Color:
                     finding = CurrentEventStreams.Where(k => k.DataTypeName.Contains("Uncompressed Color")).ToList();
                     break;
-                case PlaybackStreams.Audio:
+                case KinectStreams.Audio:
                     finding = CurrentEventStreams.Where(k => k.DataTypeName.Contains("Audio")).ToList();
                     break;
             }
 
             if (finding != null && finding.Any())
             {
-                if (stream == PlaybackStreams.Depth)
+                if (stream == KinectStreams.Depth)
                 {
                     // Note: Somehow for Depth-StreamEvents you have to fire 2 frames to get one (if you fire 10 you get 9)
                     Playback.StepOnce(finding[0]);
@@ -397,7 +397,9 @@ namespace Framework
         Normal
     }
 
-    public enum PlaybackStreams
+    // TODO (KO): Make Flagable
+    // TODO (KO): Make Singular
+    public enum KinectStreams
     {
         All = 0,
         Body = 1,

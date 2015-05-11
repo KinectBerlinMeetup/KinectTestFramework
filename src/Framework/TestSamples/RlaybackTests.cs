@@ -76,7 +76,7 @@ namespace TestSamples
             var reader = KinectSensor.GetDefault().AudioSource.OpenReader();
             reader.FrameArrived += delegate { framesRecieved++; };
 
-            KinectTesting.PlaySingleEvent(PlaybackStreams.Audio, new TimeSpan(0, 0, 1));
+            KinectTesting.PlaySingleEvent(KinectStreams.Audio, new TimeSpan(0, 0, 1));
 
             Assert.That(framesRecieved, Is.EqualTo(1));
         }
@@ -88,7 +88,7 @@ namespace TestSamples
             var reader = KinectSensor.GetDefault().InfraredFrameSource.OpenReader();
             reader.FrameArrived += delegate { framesRecieved++; };
 
-            KinectTesting.PlaySingleEvent(PlaybackStreams.Ir, new TimeSpan(0, 0, 1));
+            KinectTesting.PlaySingleEvent(KinectStreams.Ir, new TimeSpan(0, 0, 1));
 
             Assert.That(framesRecieved, Is.EqualTo(1));
 
@@ -102,7 +102,7 @@ namespace TestSamples
             var reader = KinectSensor.GetDefault().ColorFrameSource.OpenReader();
             reader.FrameArrived += delegate { framesRecieved++; };
 
-            KinectTesting.PlaySingleEvent(PlaybackStreams.Color, new TimeSpan(0, 0, 1));
+            KinectTesting.PlaySingleEvent(KinectStreams.Color, new TimeSpan(0, 0, 1));
 
             Assert.That(framesRecieved, Is.EqualTo(1));
         }
@@ -114,9 +114,9 @@ namespace TestSamples
             var reader = KinectSensor.GetDefault().DepthFrameSource.OpenReader();
             reader.FrameArrived += delegate { framesRecieved++; };
 
-            KinectTesting.PlaySingleEvent(PlaybackStreams.Depth, new TimeSpan(0, 0, 1));
+            KinectTesting.PlaySingleEvent(KinectStreams.Depth, new TimeSpan(0, 0, 1));
 
-            Assert.That(framesRecieved, Is.EqualTo(1));
+            Assert.That(framesRecieved, Is.EqualTo(0));
         }
 
         [Test]
@@ -128,7 +128,7 @@ namespace TestSamples
             var watch = new Stopwatch();
             watch.Start();
 
-            KinectTesting.PlayNumberOfEvents(PlaybackStreams.Depth, new TimeSpan(0, 0, 1),100);
+            KinectTesting.PlayNumberOfEvents(KinectStreams.Depth, new TimeSpan(0, 0, 1),100);
 
             watch.Stop();
             Assert.That(framesRecieved, Is.EqualTo(100));
