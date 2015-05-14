@@ -187,7 +187,7 @@ namespace Framework
                     finding = CurrentEventStreams.Where(k => k.DataTypeName.Contains("Depth")).ToList();
                     break;
                 case KinectStreams.Ir:
-                    finding = CurrentEventStreams.Where(k => k.DataTypeName.Contains("IR")).ToList();
+                    finding = CurrentEventStreams.Where(k => k.DataTypeName.Contains("Nui IR")).ToList();
                     break;
                 case KinectStreams.Color:
                     finding = CurrentEventStreams.Where(k => k.DataTypeName.Contains("Uncompressed Color")).ToList();
@@ -205,13 +205,13 @@ namespace Framework
                     Playback.StepOnce(finding[0]);
                     while (Playback.State != KStudioPlaybackState.Paused)
                     {
-                        Thread.Sleep(100);
+                        Thread.Sleep(200);
                     }
                 }
                 Playback.StepOnce(finding[0]);
                 while (Playback.State != KStudioPlaybackState.Paused)
                 {
-                    Thread.Sleep(100);
+                    Thread.Sleep(200);
                 }
             }
             else

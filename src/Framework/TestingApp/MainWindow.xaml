@@ -5,6 +5,7 @@
     <StackPanel HorizontalAlignment="Center" VerticalAlignment="Stretch">
         <Button Content="Record" Click="Record_OnClick"/>
         <Button Content="Play" Click="Play_OnClick"/>
+        <Button Content="Rerecord" Click="Rerecord_OnClick"/>
         <Button Content="StartPaused" Click="StartPaused_OnClick"/>
         <Button Content="Pause" Click="Pause_OnClick"/>
         <Button Content="Steponce" Click="Steponce_OnClick"/>

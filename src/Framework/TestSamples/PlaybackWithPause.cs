@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using Framework;
 using NUnit.Framework;
 
@@ -7,7 +8,7 @@ namespace TestSamples
 {
     public class PlaybackWithPause
     {
-        private readonly string _filepath = @"D:\Repositories\KinectTestFramework\Files\TestFile_allStreams.xef";
+        private readonly string _filepath = Path.GetFullPath("Kitty.xef");
 
         /// <summary>
         ///     This methods should be called only once per class, otherwise the tests would be slowed down because everythime the
@@ -19,9 +20,9 @@ namespace TestSamples
             KinectTesting.SetupPlayback(_filepath);
             KinectTesting.SetPauseMarkers(new List<TimeSpan>
             {
-                new TimeSpan(0, 0, 1),
-                new TimeSpan(0, 0, 2),
-                new TimeSpan(0, 0, 3)
+                new TimeSpan(0, 0, 0, 0, 1),
+                new TimeSpan(0, 0, 0, 0, 200),
+                new TimeSpan(0, 0, 0, 0, 300)
             });
         }
 
@@ -40,7 +41,7 @@ namespace TestSamples
         [Test]
         public void TestTillTimespan()
         {
-            KinectTesting.PlayTillMarker(new TimeSpan(0, 0, 3));
+            KinectTesting.PlayTillMarker(new TimeSpan(0, 0, 0, 0, 300));
         }
 
         /// <summary>
