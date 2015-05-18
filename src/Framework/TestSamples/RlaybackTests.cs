@@ -24,7 +24,7 @@ namespace TestSamples
         }
 
         [Test]
-        public void TestCase2()
+        public void PlayTest_NormalSpeed()
         {
             var framesRecieved = 0;
             var reader = KinectSensor.GetDefault().DepthFrameSource.OpenReader();
@@ -36,7 +36,7 @@ namespace TestSamples
         }
 
         [Test]
-        public void TestCase3()
+        public void PlayTest_FastSpeed()
         {
             var framesRecieved = 0;
             var reader = KinectSensor.GetDefault().DepthFrameSource.OpenReader();
@@ -48,7 +48,7 @@ namespace TestSamples
         }
 
         [Test]
-        public void TestCase4()
+        public void PlayTest_FastFromTo()
         {
             var framesRecieved = 0;
             var reader = KinectSensor.GetDefault().DepthFrameSource.OpenReader();
@@ -87,7 +87,7 @@ namespace TestSamples
         //}
 
         [Test]
-        public void TestSingelFrameIr()
+        public void SingleFrameTest_Ir()
         {
             var framesRecieved = 0;
             var reader = KinectSensor.GetDefault().InfraredFrameSource.OpenReader();
@@ -100,7 +100,7 @@ namespace TestSamples
         }
 
         [Test]
-        public void TestSingelFrameColor()
+        public void SingleFrameTest_Color()
         {
             var framesRecieved = 0;
             var reader = KinectSensor.GetDefault().ColorFrameSource.OpenReader();
@@ -112,7 +112,7 @@ namespace TestSamples
         }
 
         [Test]
-        public void TestSingelFrameDepth()
+        public void SingleFrameTest_Depth()
         {
             var framesRecieved = 0;
             var reader = KinectSensor.GetDefault().DepthFrameSource.OpenReader();
@@ -124,7 +124,7 @@ namespace TestSamples
         }
 
         [Test]
-        public void TestStepOnceSpeed()
+        public void PlayNumberOfEventsTest_Depth()
         {
             var framesRecieved = 0;
             var reader = KinectSensor.GetDefault().DepthFrameSource.OpenReader();

@@ -6,7 +6,7 @@ using NUnit.Framework;
 
 namespace TestSamples
 {
-    public class PlaybackWithPause
+    public class PlaybackWithPauseTests
     {
         private readonly string _filepath = Path.GetFullPath("Kitty.xef");
 
@@ -27,19 +27,19 @@ namespace TestSamples
         }
 
         [Test]
-        public void TestPlayAndIngoreMarker()
+        public void PlayTest_IngorePauses()
         {
             KinectTesting.Play();
         }
 
         [Test]
-        public void TestTillNext()
+        public void PlayTillNextMarkerTest()
         {
             KinectTesting.PlayTillNextMarker(); // 
         }
 
         [Test]
-        public void TestTillTimespan()
+        public void PlayTillTimestempTest()
         {
             KinectTesting.PlayTillMarker(new TimeSpan(0, 0, 0, 0, 300));
         }

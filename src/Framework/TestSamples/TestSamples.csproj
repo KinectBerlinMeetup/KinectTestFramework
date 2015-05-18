@@ -44,9 +44,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="PlaybackExceptionTests.cs" />
     <Compile Include="RlaybackTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="PlaybackWithPause.cs" />
+    <Compile Include="PlaybackWithPauseTests.cs" />
     <Compile Include="WrappingTests.cs" />
   </ItemGroup>
   <ItemGroup>
