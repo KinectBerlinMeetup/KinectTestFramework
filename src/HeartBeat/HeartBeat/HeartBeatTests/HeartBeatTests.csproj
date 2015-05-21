@@ -20,6 +20,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -53,6 +54,7 @@
     <Compile Include="HeartBeatCore_FrameDelayTests.cs" />
     <Compile Include="HeartBeatCore_ReplayTests.cs" />
     <Compile Include="HeartBeatCore_UnitTests.cs" />
+    <Compile Include="LiveTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StreamMonitorTests.cs" />
   </ItemGroup>

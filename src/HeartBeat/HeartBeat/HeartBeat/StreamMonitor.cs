@@ -10,18 +10,26 @@ namespace HeartBeat
     {
         private readonly DateTimeOffset bootTime;
         public uint FrameCount { get; private set; }
-        public List<DateTimeOffset> FrameTimeStemps { get; private set; }
+        public List<DateTimeOffset> FrameTimeStamps { get; private set; }
         public KinectStreams StreamType { get; private set; }
 
-        public DateTimeOffset LastFrameTimestemp
+        public DateTimeOffset LastFrameTimeStamp
         {
-            get { return FrameTimeStemps.Last(); }
+            get
+            {
+                if (FrameTimeStamps.Count > 0)
+                {
+                    return FrameTimeStamps.Last();
+                }
+                return bootTime;
+
+            }
         }
 
         public StreamMonitor(KinectStreams streamType)
         {
             StreamType = streamType;
-            FrameTimeStemps = new List<DateTimeOffset>();
+            FrameTimeStamps = new List<DateTimeOffset>();
             FrameCount = 0;
 
             using (var uptime = new PerformanceCounter("System", "System Up Time"))
@@ -34,7 +42,7 @@ namespace HeartBeat
         public void Update(TimeSpan relativeFrameTime)
         {
             FrameCount++;
-            FrameTimeStemps.Add(bootTime + relativeFrameTime);
+            FrameTimeStamps.Add(bootTime + relativeFrameTime);
         }
     }
 }
