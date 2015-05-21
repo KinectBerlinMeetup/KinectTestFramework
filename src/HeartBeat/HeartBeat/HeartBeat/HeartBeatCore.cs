@@ -129,11 +129,11 @@ namespace HeartBeat
             var monitors = GetMonitors(selectedStreams);
             foreach (var monitor in monitors)
             {
-                if ((now - monitor.LastFrameTimestemp) > FrameDelayTolerance)
+                if ((now - monitor.LastFrameTimeStamp) > FrameDelayTolerance)
                 {
                     if (FrameDelayEventHandler != null)
                     {
-                        FrameDelayEventHandler.Invoke(monitor, new FrameDelayEventArgs(monitor.LastFrameTimestemp - now, monitor.StreamType));
+                        FrameDelayEventHandler.Invoke(monitor, new FrameDelayEventArgs(monitor.LastFrameTimeStamp - now, monitor.StreamType));
                     }
                 }
             }
