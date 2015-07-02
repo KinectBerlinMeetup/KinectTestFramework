@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Threading;
+using System.Threading.Tasks;
 using Framework;
 using Microsoft.Kinect;
 using NUnit.Framework;
@@ -87,39 +88,39 @@ namespace TestSamples
         //}
 
         [Test]
-        public void SingleFrameTest_Ir()
+        public async void SingleFrameTest_Ir()
         {
             var framesRecieved = 0;
             var reader = KinectSensor.GetDefault().InfraredFrameSource.OpenReader();
             reader.FrameArrived += delegate { framesRecieved++; };
 
             KinectTesting.PlaySingleEvent(KinectStreams.Ir, new TimeSpan(0, 0, 0, 0, 100));
-
+            await KinectTesting.Wait(TimeSpan.FromSeconds(1));
             Assert.That(framesRecieved, Is.EqualTo(1));
 
         }
 
         [Test]
-        public void SingleFrameTest_Color()
+        public async void SingleFrameTest_Color()
         {
             var framesRecieved = 0;
             var reader = KinectSensor.GetDefault().ColorFrameSource.OpenReader();
             reader.FrameArrived += delegate { framesRecieved++; };
 
             KinectTesting.PlaySingleEvent(KinectStreams.Color, new TimeSpan(0, 0, 0, 0, 100));
-
+            await KinectTesting.Wait(new TimeSpan(0, 0, 1));
             Assert.That(framesRecieved, Is.EqualTo(1));
         }
 
         [Test]
-        public void SingleFrameTest_Depth()
+        public async void SingleFrameTest_Depth()
         {
             var framesRecieved = 0;
             var reader = KinectSensor.GetDefault().DepthFrameSource.OpenReader();
             reader.FrameArrived += delegate { framesRecieved++; };
 
             KinectTesting.PlaySingleEvent(KinectStreams.Depth, new TimeSpan(0, 0, 0, 0, 100));
-
+            await KinectTesting.Wait(new TimeSpan(0, 0, 1));
             Assert.That(framesRecieved, Is.EqualTo(1));
         }
 

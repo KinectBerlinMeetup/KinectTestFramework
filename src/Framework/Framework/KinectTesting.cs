@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.Kinect;
 using Microsoft.Kinect.Tools;
 
@@ -389,6 +390,15 @@ namespace Framework
         }
 
         #endregion
+
+        public static async Task Wait(TimeSpan timeSpan)
+        {
+            await Task.Run(async () =>
+            {
+                await Task.Delay(timeSpan);
+            });
+        }
+
     }
 
     public enum PlaybackTiming
