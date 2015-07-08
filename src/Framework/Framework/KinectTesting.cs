@@ -132,7 +132,7 @@ namespace Framework
             while (Playback.State != KStudioPlaybackState.Paused)
             {
                 if (Playback.State == KStudioPlaybackState.Stopped) break;
-                Thread.Sleep(50);
+                Task.WaitAll(Task.Delay(TimeSpan.FromSeconds(0.5)));
             }
         }
 
@@ -157,7 +157,7 @@ namespace Framework
             while (Playback.State != KStudioPlaybackState.Paused)
             {
                 if (Playback.State == KStudioPlaybackState.Stopped) break;
-                Thread.Sleep(50);
+                Task.WaitAll(Task.Delay(TimeSpan.FromSeconds(0.5)));
             }
         }
 
@@ -276,7 +276,7 @@ namespace Framework
                             Playback.Pause();
                             break;
                         }
-                        Thread.Sleep(50);
+                        Task.WaitAll(Task.Delay(TimeSpan.FromSeconds(0.5)));
                     }
                 }
 
@@ -289,7 +289,7 @@ namespace Framework
                         {
                             break;
                         }
-                        Thread.Sleep(50);
+                        Task.WaitAll(Task.Delay(TimeSpan.FromSeconds(0.5)));
                     }
                 }
             }
@@ -343,7 +343,7 @@ namespace Framework
 
             while (Playback.State != KStudioPlaybackState.Stopped)
             {
-                Thread.Sleep(50);
+                Task.WaitAll(Task.Delay(TimeSpan.FromSeconds(0.5)));
             }
             SetPauseMarkers(tempPausePoints);
             DeleteInAndOutPoint();
@@ -391,12 +391,9 @@ namespace Framework
 
         #endregion
 
-        public static async Task Wait(TimeSpan timeSpan)
+        public static void Wait(TimeSpan timeSpan)
         {
-            await Task.Run(async () =>
-            {
-                await Task.Delay(timeSpan);
-            });
+            Task.WaitAll(Task.Delay(timeSpan));
         }
 
     }
